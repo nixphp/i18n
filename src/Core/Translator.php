@@ -16,14 +16,21 @@ class Translator
         $this->lang = config('locale', config('fallback_locale')) ?? Language::EN->value;
     }
 
-    public function translate(string $key): string
+    public function translate(string $key, array $params = []): string
     {
         $file = app()->getBasePath() . '/app/Resources/lang/' . $this->lang . '.json';
         if (!file_exists($file)) {
             throw new \LogicException('Language file "' . $file . '" not found.');
         }
         $data = json_decode(file_get_contents($file), true);
-        return $data[$key] ?? $key;
+
+        $result = $data[$key] ?? $key;
+
+        foreach ($params as $k => $v) {
+            $result = str_replace(':' . $k, $v, $result);
+        }
+
+        return $result;
     }
 
 }

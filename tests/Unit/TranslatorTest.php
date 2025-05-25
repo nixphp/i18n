@@ -48,6 +48,22 @@ class TranslatorTest extends NixPHPTestCase
         $translator->translate('translated');
     }
 
+    public function testTranslationWithParams()
+    {
+        $config = new Config(['locale' => 'de']);
+        app()->container()->set('config', $config);
+        $translator = new Translator();
+        $this->assertSame('test output', $translator->translate('parameter', ['testKey' => 'output']));
+    }
+
+    public function testTranslationWithParamsAndMissingKey()
+    {
+        $config = new Config(['locale' => 'de']);
+        app()->container()->set('config', $config);
+        $translator = new Translator();
+        $this->assertSame('test :testKey', $translator->translate('parameter', ['does-not-exist' => '']));
+    }
+
     public function testHelperFunction()
     {
         $config = new Config(['locale' => 'en']);
