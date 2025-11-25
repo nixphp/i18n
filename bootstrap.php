@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 use NixPHP\I18n\Core\Translator;
 use NixPHP\I18n\Events\CookieSetListener;
 use NixPHP\I18n\Events\LocaleListener;
+use NixPHP\Enum\Event;
 use function NixPHP\app;
 use function NixPHP\event;
 
-app()->container()->set('translator', function() {
-    return new Translator();
-});
+app()->container()->set(Translator::class, fn() => new Translator());
 
-event()->listen('request.start', [LocaleListener::class, 'handle']);
-event()->listen('response.header', [CookieSetListener::class, 'handle']);
+event()->listen(Event::REQUEST_START, [LocaleListener::class, 'handle']);
+event()->listen(Event::RESPONSE_HEADER, [CookieSetListener::class, 'handle']);

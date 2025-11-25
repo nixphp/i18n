@@ -20,9 +20,15 @@
       "Tests\\": "tests/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../nixphp-framework"
+    }
+  ],
   "require": {
     "php": ">=8.3",
-    "nixphp/framework": "dev-main"
+    "nixphp/framework": "dev-0.1.0-rc"
   },
   "require-dev": {
     "phpunit/phpunit": "^12.1",

@@ -1,28 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NixPHP\I18n\Core;
 
 use NixPHP\I18n\Enum\Language;
 use function NixPHP\app;
+use function NixPHP\config;
 use function NixPHP\log;
 
 class Translator
 {
-
-    private string $lang = Language::EN->value;
-
+    private ?Language $language;
     private array $data = [];
 
-    public function translate(string $key, array $params = []): string
+    public function __construct(?Language $language = null)
     {
-        $file = app()->getBasePath() . '/app/Resources/lang/' . $this->lang . '.json';
+        $this->language = $language;
+        $this->reload();
+    }
 
-        if (empty($this->data) && file_exists($file)) {
-            $this->data = json_decode(file_get_contents($file), true);
-        } else {
-            log()->error('Language file not found: ' . $file);
-        }
+    public function reload(): void
+    {
+        $this->loadLanguageData();
+    }
 
+    public function translate(string $key, ?array $params = []): string
+    {
         $result = $this->data[$key] ?? $key;
 
         foreach ($params as $k => $v) {
@@ -32,14 +36,28 @@ class Translator
         return $result;
     }
 
-    public function getLanguage(): string
+    public function getLanguage(): Language
     {
-        return $this->lang;
+        return $this->language;
     }
 
-    public function setLanguage(string $lang): void
+    public function setLanguage(Language $lang): void
     {
-        $this->lang = $lang;
+        $this->language = $lang;
+    }
+
+    private function loadLanguageData(): void
+    {
+        $lang     = $this->language->value ?? config('language') ?? config('fallback_language', 'en');
+        $filePath = app()->getBasePath() . config('app:filePath', '/app/Resources/lang');
+        $file     = sprintf('%s/%s.json', $filePath, $lang);
+
+        if (!file_exists($file)) {
+            log()->error('Language file not found: ' . $file);
+            throw new \LogicException('Language file not found: ' . $file);
+        }
+
+        $this->data = json_decode(file_get_contents($file), true);
     }
 
 }

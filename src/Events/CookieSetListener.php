@@ -15,8 +15,7 @@ class CookieSetListener
 
     public function handle(ResponseInterface $response):? ResponseInterface
     {
-        /** @var Translator $translator */
-        $translator = app()->container()->get('translator');
+        $translator = app()->container()->get(Translator::class);
         $lang = $translator->getLanguage();
 
         $queryLang = request()->getQueryParams()['lang'] ?? null;
