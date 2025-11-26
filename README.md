@@ -47,7 +47,7 @@ to access the translator directly.
 
 ## 🚀 Usage
 
-If you don't configure a lang
+>If you don't configure a language, the default language is English (`en`).
 
 ### 🔍 Translate
 
@@ -101,7 +101,7 @@ Make sure `app/Resources/lang/de.json` exists.
 /index.php?lang=de
 ```
 
-> Another listener will set the language based on the query parameter within a cookie.
+> An event listener will set the language based on the query parameter within a cookie.
 
 
 ---
