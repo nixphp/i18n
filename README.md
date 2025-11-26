@@ -136,7 +136,7 @@ Each file should be a flat key-value map using UTF-8 encoded JSON.
 
 ## ✅ Requirements
 
-* `nixphp/framework` >= 1.0
+* `nixphp/framework` >= 0.1.0
 * PHP >= 8.1
 
 ---
