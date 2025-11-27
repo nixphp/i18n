@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace NixPHP\I18n;
 
+use NixPHP\I18n\Core\Language;
 use NixPHP\I18n\Core\Translator;
-use NixPHP\I18n\Enum\Language;
 use function NixPHP\app;
 
 /**

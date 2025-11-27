@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace NixPHP\I18n\Core;
 
-use NixPHP\I18n\Enum\Language;
 use function NixPHP\app;
 use function NixPHP\config;
 use function NixPHP\log;
 
 class Translator
 {
-    private ?Language $language;
+    private ?string $language;
     private array $data = [];
 
-    public function __construct(?Language $language = null)
+    public function __construct(?string $language = null)
     {
         $this->language = $language;
         $this->reload();
@@ -36,19 +35,19 @@ class Translator
         return $result;
     }
 
-    public function getLanguage(): Language
+    public function getLanguage():? string
     {
         return $this->language;
     }
 
-    public function setLanguage(Language $lang): void
+    public function setLanguage(string $lang): void
     {
         $this->language = $lang;
     }
 
     private function loadLanguageData(): void
     {
-        $lang     = $this->language->value ?? config('language') ?? config('fallback_language', 'en');
+        $lang     = $this->language->value ?? config('language') ?? config('fallback_language', Language::EN);
         $filePath = app()->getBasePath() . config('app:filePath', '/app/Resources/lang');
         $file     = sprintf('%s/%s.json', $filePath, $lang);
 

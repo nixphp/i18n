@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
-use NixPHP\I18n\Enum\Language;
 use Psr\Http\Message\ServerRequestInterface;
 use function NixPHP\app;
 
@@ -21,11 +20,11 @@ class LocaleListener
         $cookieLang  = $request->getCookieParams()['lang'] ?? null;
         $headerLang  = $this->parseAcceptLanguage($request->getHeaderLine('Accept-Language'));
 
-        $language = Language::tryFrom(
-            $queryLang
-            ?? $cookieLang
-            ?? $headerLang[0]
-        );
+        $language = $queryLang ?? $cookieLang ?? $headerLang[0] ?? null;
+
+        if ($language === null) {
+            return;
+        }
 
         $translator = app()->container()->get(Translator::class);
 
