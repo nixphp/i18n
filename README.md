@@ -39,8 +39,8 @@ It reads language files from disk, supports variable replacements, and falls bac
 composer require nixphp/i18n
 ```
 
-The plugin auto-registers and makes a `t()` as well as a `translate()` helper available globally. 
-The `t()` function accepts a key and an optional array of replacements, while `translate()` is a shortcut 
+The plugin auto-registers and makes a `t()` as well as a `translator()` helper available globally. 
+The `t()` function accepts a key and an optional array of replacements, while `translator()` is a shortcut 
 to access the translator directly.
 
 ---

@@ -28,9 +28,9 @@ function translator(): Translator
 }
 
 /**
- * @return Language
+ * @return string|null
  */
-function lang(): Language
+function lang(): ?string
 {
     return app()->container()->get(Translator::class)->getLanguage();
 }

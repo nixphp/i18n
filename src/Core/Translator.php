@@ -35,7 +35,7 @@ class Translator
         return $result;
     }
 
-    public function getLanguage():? string
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
@@ -43,12 +43,13 @@ class Translator
     public function setLanguage(string $lang): void
     {
         $this->language = $lang;
+        $this->reload();
     }
 
     private function loadLanguageData(): void
     {
-        $lang     = $this->language->value ?? config('language') ?? config('fallback_language', Language::EN);
-        $filePath = app()->getBasePath() . config('app:filePath', '/app/Resources/lang');
+        $lang     = $this->language ?? config('language') ?? config('fallback_language', Language::EN);
+        $filePath = app()->getBasePath() . config('app:translationPath', '/app/Resources/lang');
         $file     = sprintf('%s/%s.json', $filePath, $lang);
 
         if (!file_exists($file)) {
@@ -56,7 +57,7 @@ class Translator
             throw new \LogicException('Language file not found: ' . $file);
         }
 
-        $this->data = json_decode(file_get_contents($file), true);
+        $this->data = json_decode(file_get_contents($file), true) ?? [];
     }
 
 }

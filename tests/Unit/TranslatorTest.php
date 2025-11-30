@@ -27,7 +27,7 @@ class TranslatorTest extends NixPHPTestCase
 
     public function testTranslationWithDifferentLanguage()
     {
-        $config = new Config(['language' => 'de', 'fallback_lang' => 'en']);
+        $config = new Config(['language' => 'de', 'fallback_language' => 'en']);
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('übersetzt', $translator->translate('translated'));
@@ -35,7 +35,7 @@ class TranslatorTest extends NixPHPTestCase
 
     public function testTranslationFallbackLanguage()
     {
-        $config = new Config(['language' => 'es', 'fallback_lang' => 'en']);
+        $config = new Config(['language' => 'es', 'fallback_language' => 'en']);
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('translated', $translator->translate('translated'));

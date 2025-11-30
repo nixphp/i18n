@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Core;
 
 /**
- * Enum Language
+ * Class Language
  *
  * Represents supported languages using ISO 639-1 codes.
- * Extend this enum as needed to support more locales.
+ * Extend this class as needed to support more locales.
  */
 class Language
 {
