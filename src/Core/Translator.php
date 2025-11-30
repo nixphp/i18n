@@ -57,7 +57,14 @@ class Translator
             throw new \LogicException('Language file not found: ' . $file);
         }
 
-        $this->data = json_decode(file_get_contents($file), true) ?? [];
+        $data = json_decode(file_get_contents($file), true);
+
+        if (!is_array($data)) {
+            log()->error('Invalid or malformed JSON in language file: ' . $file);
+            throw new \LogicException('Invalid JSON in language file: ' . $file);
+        }
+
+        $this->data = $data;
     }
 
 }
