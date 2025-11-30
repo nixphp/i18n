@@ -1,4 +1,4 @@
 .idea
 vendor/
 .phpunit.result.cache
-tests/Fixtures/logs/*
+tests/Fixtures/logs/
