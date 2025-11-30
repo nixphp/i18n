@@ -9,12 +9,12 @@ use NixPHP\I18n\Core\Translator;
 use function NixPHP\app;
 
 /**
- * @param string     $key
- * @param array|null $params
+ * @param string $key
+ * @param array  $params
  *
  * @return string
  */
-function t(string $key, ?array $params = []): string
+function t(string $key, array $params = []): string
 {
     return app()->container()->get(Translator::class)->translate($key, $params);
 }

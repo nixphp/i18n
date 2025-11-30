@@ -24,7 +24,7 @@ class Translator
         $this->loadLanguageData();
     }
 
-    public function translate(string $key, ?array $params = []): string
+    public function translate(string $key, array $params = []): string
     {
         $result = $this->data[$key] ?? $key;
 
