@@ -1,31 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
 use Psr\Http\Message\ServerRequestInterface;
 use function NixPHP\app;
-use function NixPHP\config;
 
 class LocaleListener
 {
     public function handle(ServerRequestInterface $request): void
     {
-        if (str_contains($request->getUri(), '/favicon.ico')) {
+        if (str_contains((string)$request->getUri(), '/favicon.ico')) {
             return;
         }
 
-        $headerLang  = $this->parseAcceptLanguage($request->getHeaderLine('Accept-Language'));
         $queryLang   = $request->getQueryParams()['lang'] ?? null;
         $cookieLang  = $request->getCookieParams()['lang'] ?? null;
+        $headerLang  = $this->parseAcceptLanguage($request->getHeaderLine('Accept-Language'));
 
-        $language = $queryLang
-            ?? $cookieLang
-            ?? $headerLang[0]
-            ?? config('fallback_locale');
+        $language = $queryLang ?? $cookieLang ?? $headerLang[0] ?? null;
 
-        /** @var Translator $translator */
-        $translator = app()->container()->get('translator');
+        if ($language === null) {
+            return;
+        }
+
+        $translator = app()->container()->get(Translator::class);
 
         $translator->setLanguage($language);
     }

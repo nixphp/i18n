@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use NixPHP\Core\Config;
@@ -25,16 +27,16 @@ class TranslatorTest extends NixPHPTestCase
 
     public function testTranslationWithDifferentLanguage()
     {
-        $config = new Config(['locale' => 'de', 'fallback_locale' => 'en']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'de', 'fallback_language' => 'en']);
+        app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('übersetzt', $translator->translate('translated'));
     }
 
     public function testTranslationFallbackLanguage()
     {
-        $config = new Config(['locale' => 'es', 'fallback_locale' => 'en']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'es', 'fallback_language' => 'en']);
+        app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('translated', $translator->translate('translated'));
     }
@@ -42,32 +44,32 @@ class TranslatorTest extends NixPHPTestCase
     public function testTranslationMissingLanguageFile()
     {
         $this->expectException(\LogicException::class);
-        $config = new Config(['locale' => 'xx']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'xx']);
+        app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $translator->translate('translated');
     }
 
     public function testTranslationWithParams()
     {
-        $config = new Config(['locale' => 'de']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'de']);
+        app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('test output', $translator->translate('parameter', ['testKey' => 'output']));
     }
 
     public function testTranslationWithParamsAndMissingKey()
     {
-        $config = new Config(['locale' => 'de']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'de']);
+        app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('test :testKey', $translator->translate('parameter', ['does-not-exist' => '']));
     }
 
     public function testHelperFunction()
     {
-        $config = new Config(['locale' => 'en']);
-        app()->container()->set('config', $config);
+        $config = new Config(['language' => 'en']);
+        app()->container()->set(Config::class, $config);
         $this->assertSame('translated', t('translated'));
     }
 

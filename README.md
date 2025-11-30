@@ -25,10 +25,11 @@ It reads language files from disk, supports variable replacements, and falls bac
 ## 📦 Features
 
 * ✅ Loads language files from `app/Resources/lang/`
-* ✅ Supports `translator()->get('key')` with fallback mechanism
+* ✅ Set language via config with key app:translationPath
+* ✅ Supports `t('key')` with a fallback mechanism
 * ✅ Replaces variables via `:name`, `:count`, etc.
 * ✅ Language codes follow ISO 639-1 (e.g. `en`, `de`, `fr`)
-* ✅ JSON-based – easy to edit, export and manage
+* ✅ JSON-based – easy to edit, export, and manage
 
 ---
 
@@ -38,16 +39,20 @@ It reads language files from disk, supports variable replacements, and falls bac
 composer require nixphp/i18n
 ```
 
-The plugin auto-registers and makes a `translator()` helper available globally.
+The plugin auto-registers and makes a `t()` as well as a `translator()` helper available globally. 
+The `t()` function accepts a key and an optional array of replacements, while `translator()` is a shortcut 
+to access the translator directly.
 
 ---
 
 ## 🚀 Usage
 
-### 🔍 Get a translation
+>If you don't configure a language, the default language is English (`en`).
+
+### 🔍 Translate
 
 ```php
-echo translator()->get('welcome');
+echo t('welcome');
 ```
 
 Assuming `app/Resources/lang/en.json` contains:
@@ -66,7 +71,7 @@ You’ll see:
 ### ✨ With replacements
 
 ```php
-echo translator()->get('greeting', ['name' => 'Flo']);
+echo t('greeting', ['name' => 'John']);
 ```
 
 With this JSON entry:
@@ -78,17 +83,26 @@ With this JSON entry:
 ```
 
 Result:
-`Hello, Flo!`
+`Hello, John!`
 
 ---
 
 ### 🌍 Switch language
 
 ```php
-translator()->setLocale('de');
+t()->setLanguage(Language::DE);
 ```
 
 Make sure `app/Resources/lang/de.json` exists.
+
+#### Through query parameter
+
+```php
+/index.php?lang=de
+```
+
+> An event listener will set the language based on the query parameter within a cookie.
+
 
 ---
 
@@ -122,7 +136,7 @@ Each file should be a flat key-value map using UTF-8 encoded JSON.
 
 ## ✅ Requirements
 
-* `nixphp/framework` >= 1.0
+* `nixphp/framework` >= 0.1.0
 * PHP >= 8.1
 
 ---
