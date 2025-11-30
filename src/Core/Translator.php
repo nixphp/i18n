@@ -64,7 +64,8 @@ class Translator
             throw new \LogicException('Invalid JSON in language file: ' . $file);
         }
 
-        $this->data = $data;
+        $this->language = $lang;
+        $this->data     = $data;
     }
 
 }
