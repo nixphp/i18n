@@ -41,13 +41,12 @@ class TranslatorTest extends NixPHPTestCase
         $this->assertSame('translated', $translator->translate('translated'));
     }
 
-    public function testTranslationMissingLanguageFile()
+    public function testTranslationMissingLanguageFileDoesntThrowException()
     {
-        $this->expectException(\LogicException::class);
         $config = new Config(['language' => 'xx']);
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
-        $translator->translate('translated');
+        $this->assertSame('translated', $translator->translate('translated'));
     }
 
     public function testTranslationWithParams()
