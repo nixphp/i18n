@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NixPHP\I18n\Core;
 
+use LogicException;
+use NixPHP\I18n\Support\LanguageString;
 use function NixPHP\app;
 use function NixPHP\config;
 use function NixPHP\log;
@@ -78,7 +80,7 @@ class Translator
      */
     public function setLanguage(string $lang): void
     {
-        $this->language = $lang;
+        $this->language = LanguageString::normalizeLanguage($lang);
         $this->reload();
     }
 
@@ -90,7 +92,7 @@ class Translator
      * Throws an exception if the file is missing or its contents are invalid.
      *
      * @return void
-     * @throws \LogicException If the language file is not found or contains invalid JSON.
+     * @throws LogicException If the language file is not found or contains invalid JSON.
      */
     private function loadLanguageData(): void
     {
@@ -111,5 +113,4 @@ class Translator
         $this->language = $lang;
         $this->data     = $data;
     }
-
 }

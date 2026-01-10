@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
+use NixPHP\I18n\Support\LanguageString;
 use Psr\Http\Message\ResponseInterface;
 use function NixPHP\app;
 use function NixPHP\log;
@@ -35,7 +36,7 @@ class CookieSetListener
             return null;
         }
 
-        $lang = $this->normalizeLanguage($lang);
+        $lang = LanguageString::normalizeLanguage($lang);
 
         $queryLang  = request()->getQueryParams()['lang'] ?? null;
         $cookieLang = request()->getCookieParams()['lang'] ?? null;
@@ -47,7 +48,7 @@ class CookieSetListener
                 'Set-Cookie',
                 sprintf(
                     'lang=%s; Path=/; Max-Age=%d; SameSite=Lax',
-                    $lang,
+                    rawurlencode($lang),
                     60 * 60 * 24 * 30
                 )
             );
@@ -55,23 +56,5 @@ class CookieSetListener
 
         return null;
     }
-
-
-    /**
-     * Normalizes a language code by converting it to lowercase, replacing underscores with hyphens,
-     * and extracting the primary language subtag.
-     *
-     * @param string $lang The language code to normalize.
-     *
-     * @return string The normalized primary language subtag.
-     */
-    private function normalizeLanguage(string $lang): string
-    {
-        $lang = strtolower(trim($lang));
-        $lang = str_replace('_', '-', $lang);
-
-        return explode('-', $lang, 2)[0];
-    }
-
 
 }

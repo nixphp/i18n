@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
+use NixPHP\I18n\Support\LanguageString;
 use Psr\Http\Message\ServerRequestInterface;
 use function NixPHP\app;
 
@@ -37,7 +38,7 @@ class LocaleListener
             return;
         }
 
-        $language = $this->normalizeLanguage($language);
+        $language = LanguageString::normalizeLanguage($language);
         app()->container()->get(Translator::class)->setLanguage($language);
     }
 
@@ -70,33 +71,4 @@ class LocaleListener
 
         return array_keys($languages);
     }
-
-    /**
-     * Normalizes a language tag by extracting the basic language component and converting it to lowercase.
-     *
-     * @param string $tag The raw language tag, which may include region subtags, quality values, or multiple entries.
-     *
-     * @return string The normalized basic language tag in lowercase format.
-     */
-    private function normalizeLanguage(string $tag): string
-    {
-        $tag = trim($tag);
-
-        // String transformed from "de-DE,de;q=0.9" to "de-DE"
-        if (str_contains($tag, ',')) {
-            $tag = explode(',', $tag, 2)[0];
-        }
-
-        // Normalize underscores
-        $tag = str_replace('_', '-', $tag);
-
-        // Cut quality part (in case something like "de-DE;q=0.9" comes in)
-        $tag = explode(';', $tag, 2)[0];
-
-        // Only basic language
-        $base = explode('-', $tag, 2)[0];
-
-        return strtolower($base);
-    }
-
 }
