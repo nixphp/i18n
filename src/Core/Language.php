@@ -46,7 +46,7 @@ class Language
      *
      * @return string
      */
-    public function label(string $language): string
+    public function label(string $language, ?string $default = null): string
     {
         return match ($language) {
             self::EN => 'English',
@@ -73,6 +73,7 @@ class Language
             self::UK => 'Українська',
             self::TH => 'ไทย',
             self::VI => 'Tiếng Việt',
+            default  => $default ?? self::EN
         };
     }
 
