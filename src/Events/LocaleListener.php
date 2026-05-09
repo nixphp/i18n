@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
-use NixPHP\I18n\Support\LanguageString;
+use NixPHP\I18n\Support\Language;
 use Psr\Http\Message\ServerRequestInterface;
 use function NixPHP\app;
 
@@ -38,7 +38,7 @@ class LocaleListener
             return;
         }
 
-        $language = LanguageString::normalizeLanguage($language);
+        $language = Language::normalize($language);
         app()->container()->get(Translator::class)->setLanguage($language);
     }
 
@@ -58,10 +58,18 @@ class LocaleListener
             $locale   = strtolower(str_replace('_', '-', $segments[0]));
             $quality  = 1.0;
 
+            if ($locale === '') {
+                continue;
+            }
+
             foreach (array_slice($segments, 1) as $seg) {
                 if (str_starts_with($seg, 'q=')) {
                     $quality = (float) substr($seg, 2);
                 }
+            }
+
+            if ($quality <= 0) {
+                continue;
             }
 
             $languages[$locale] = $quality;

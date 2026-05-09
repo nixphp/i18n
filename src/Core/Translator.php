@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Core;
 
 use LogicException;
-use NixPHP\I18n\Support\LanguageString;
+use NixPHP\I18n\Support\Language;
+use Stringable;
+use Throwable;
 use function NixPHP\app;
 use function NixPHP\config;
 use function NixPHP\log;
@@ -24,7 +26,7 @@ class Translator
      */
     public function __construct(?string $language = null)
     {
-        $this->language = $language;
+        $this->language = $language ? Language::normalize($language) : null;
         $this->reload();
     }
 
@@ -35,10 +37,15 @@ class Translator
      */
     public function reload(): void
     {
+        $this->language ??= Language::normalize(
+            (string)(config('language') ?? config('fallback_language', Language::EN))
+        );
+
         try {
-            $this->loadLanguageData();
-        } catch (\Throwable $t) {
+            $this->data = $this->loadLanguageData($this->language);
+        } catch (Throwable $t) {
             log()->info($t->getMessage());
+            $this->data = [];
         }
     }
 
@@ -54,11 +61,21 @@ class Translator
     {
         $result = $this->data[$key] ?? $key;
 
-        foreach ($params as $k => $v) {
-            $result = str_replace(':' . $k, $v, $result);
+        if ($params === []) {
+            return $result;
         }
 
-        return $result;
+        $replacements = [];
+
+        foreach ($params as $k => $v) {
+            if (!is_scalar($v) && !$v instanceof Stringable && $v !== null) {
+                continue;
+            }
+
+            $replacements[':' . $k] = (string)$v;
+        }
+
+        return $replacements === [] ? $result : strtr($result, $replacements);
     }
 
     /**
@@ -80,7 +97,7 @@ class Translator
      */
     public function setLanguage(string $lang): void
     {
-        $this->language = LanguageString::normalizeLanguage($lang);
+        $this->language = Language::normalize($lang);
         $this->reload();
     }
 
@@ -91,12 +108,13 @@ class Translator
      * Reads the corresponding translation file, validates its contents, and sets the language data.
      * Throws an exception if the file is missing or its contents are invalid.
      *
-     * @return void
+     * @param string $lang The language code to load.
+     *
+     * @return array<string,string>
      * @throws LogicException If the language file is not found or contains invalid JSON.
      */
-    private function loadLanguageData(): void
+    private function loadLanguageData(string $lang): array
     {
-        $lang     = $this->language ?? config('language') ?? config('fallback_language', Language::EN);
         $filePath = app()->getBasePath() . config('app:translationPath', '/app/Resources/lang');
         $file     = sprintf('%s/%s.json', $filePath, $lang);
 
@@ -110,7 +128,7 @@ class Translator
             throw new \LogicException('Invalid JSON in language file: ' . $file);
         }
 
-        $this->language = $lang;
-        $this->data     = $data;
+        return $data;
     }
+
 }

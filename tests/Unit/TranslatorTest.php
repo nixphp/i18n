@@ -33,12 +33,13 @@ class TranslatorTest extends NixPHPTestCase
         $this->assertSame('übersetzt', $translator->translate('translated'));
     }
 
-    public function testTranslationFallbackLanguage()
+    public function testEmptyLanguageFileReturnsKey()
     {
         $config = new Config(['language' => 'es', 'fallback_language' => 'en']);
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('translated', $translator->translate('translated'));
+        $this->assertSame('es', $translator->getLanguage());
     }
 
     public function testTranslationMissingLanguageFileDoesntThrowException()
@@ -47,6 +48,17 @@ class TranslatorTest extends NixPHPTestCase
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('translated', $translator->translate('translated'));
+        $this->assertSame('xx', $translator->getLanguage());
+    }
+
+    public function testMissingLanguageFileKeepsSelectedLanguage()
+    {
+        $config = new Config(['language' => 'en', 'fallback_language' => 'en']);
+        app()->container()->set(Config::class, $config);
+        $translator = new Translator('xx');
+
+        $this->assertSame('translated', $translator->translate('translated'));
+        $this->assertSame('xx', $translator->getLanguage());
     }
 
     public function testTranslationWithParams()
@@ -55,6 +67,14 @@ class TranslatorTest extends NixPHPTestCase
         app()->container()->set(Config::class, $config);
         $translator = new Translator();
         $this->assertSame('test output', $translator->translate('parameter', ['testKey' => 'output']));
+    }
+
+    public function testTranslationWithScalarParams()
+    {
+        $config = new Config(['language' => 'de']);
+        app()->container()->set(Config::class, $config);
+        $translator = new Translator();
+        $this->assertSame('test 3', $translator->translate('parameter', ['testKey' => 3]));
     }
 
     public function testTranslationWithParamsAndMissingKey()
