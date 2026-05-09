@@ -25,7 +25,7 @@ It reads language files from disk, supports variable replacements, and falls bac
 ## 📦 Features
 
 * Loads language files from `app/Resources/lang/`
-* Set language via config with key app:translationPath
+* Configure translation file path via config key `app:translationPath` (use `language` to set the language)
 * Supports `t('key')` with a fallback mechanism
 * Replaces variables via `:name`, `:count`, etc.
 * Language codes follow ISO 639-1 (e.g. `en`, `de`, `fr`)

@@ -80,7 +80,17 @@ class Language
         $base = strtolower(explode('-', $tag, 2)[0]);
 
         if (!preg_match('/^[a-z]{2,3}$/', $base)) {
-            return (string)(config('fallback_language', self::EN) ?? self::EN);
+            $fallback = trim((string)(config('fallback_language', self::EN) ?? self::EN));
+
+            if (str_contains($fallback, ',')) {
+                $fallback = explode(',', $fallback, 2)[0];
+            }
+
+            $fallback = str_replace('_', '-', $fallback);
+            $fallback = explode(';', $fallback, 2)[0];
+            $base     = strtolower(explode('-', $fallback, 2)[0]);
+
+            return preg_match('/^[a-z]{2,3}$/', $base) ? $base : self::EN;
         }
 
         return $base;
@@ -93,7 +103,7 @@ class Language
 
     public function label(string $language, ?string $default = null): string
     {
-        return self::LABELS[$language] ?? $default ?? self::EN;
+        return self::LABELS[$language] ?? $default ?? self::LABELS[self::EN];
     }
 
     /**

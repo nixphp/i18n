@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use NixPHP\Core\Config;
 use NixPHP\I18n\Support\Language;
 use Tests\NixPHPTestCase;
+use function NixPHP\app;
 
 class LanguageTest extends NixPHPTestCase
 {
@@ -31,6 +33,11 @@ class LanguageTest extends NixPHPTestCase
         $this->assertSame('Unknown', (new Language())->label('xx', 'Unknown'));
     }
 
+    public function testLabelFallsBackToEnglishLabel()
+    {
+        $this->assertSame('English', (new Language())->label('xx'));
+    }
+
     public function testLabelsAreKeyedByLanguageCode()
     {
         $this->assertSame('English', Language::labels()[Language::EN]);
@@ -54,6 +61,21 @@ class LanguageTest extends NixPHPTestCase
     {
         $this->assertSame('de', Language::normalize('de-DE,de;q=0.9'));
         $this->assertSame('de', Language::normalize('de_DE'));
+        $this->assertSame('en', Language::normalize('../de'));
+    }
+
+    public function testNormalizeUsesValidatedFallbackLanguage()
+    {
+        app()->container()->set(Config::class, new Config([
+            'fallback_language' => ' DE-de ',
+        ]));
+
+        $this->assertSame('de', Language::normalize('../de'));
+
+        app()->container()->set(Config::class, new Config([
+            'fallback_language' => '../de',
+        ]));
+
         $this->assertSame('en', Language::normalize('../de'));
     }
 
