@@ -24,12 +24,12 @@ It reads language files from disk, supports variable replacements, and falls bac
 
 ## 📦 Features
 
-* ✅ Loads language files from `app/Resources/lang/`
-* ✅ Set language via config with key app:translationPath
-* ✅ Supports `t('key')` with a fallback mechanism
-* ✅ Replaces variables via `:name`, `:count`, etc.
-* ✅ Language codes follow ISO 639-1 (e.g. `en`, `de`, `fr`)
-* ✅ JSON-based – easy to edit, export, and manage
+* Loads language files from `app/Resources/lang/`
+* Set language via config with key app:translationPath
+* Supports `t('key')` with a fallback mechanism
+* Replaces variables via `:name`, `:count`, etc.
+* Language codes follow ISO 639-1 (e.g. `en`, `de`, `fr`)
+* JSON-based – easy to edit, export, and manage
 
 ---
 
@@ -90,6 +90,8 @@ Result:
 ### 🌍 Switch language
 
 ```php
+use NixPHP\I18n\Support\Language;
+
 t()->setLanguage(Language::DE);
 ```
 

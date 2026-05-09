@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace NixPHP\I18n\Events;
 
 use NixPHP\I18n\Core\Translator;
-use NixPHP\I18n\Support\LanguageString;
+use NixPHP\I18n\Support\Language;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function NixPHP\app;
 use function NixPHP\log;
@@ -32,14 +33,15 @@ class CookieSetListener
         $translator = app()->container()->get(Translator::class);
         $lang = $translator->getLanguage();
 
-        if (!$lang) {
+        if (!$lang || !app()->container()->has(RequestInterface::class)) {
             return null;
         }
 
-        $lang = LanguageString::normalizeLanguage($lang);
+        $request = request();
+        $lang    = Language::normalize($lang);
 
-        $queryLang  = request()->getQueryParams()['lang'] ?? null;
-        $cookieLang = request()->getCookieParams()['lang'] ?? null;
+        $queryLang  = $request->getQueryParams()['lang'] ?? null;
+        $cookieLang = $request->getCookieParams()['lang'] ?? null;
 
         if ($queryLang || !$cookieLang) {
             log()->info('Setting cookie lang: ' . $lang);
