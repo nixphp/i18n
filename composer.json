@@ -1,5 +1,6 @@
 {
   "name": "nixphp/i18n",
+  "abandoned": "naf/i18n",
   "description": "NixPHP Internationalization Plugin",
   "minimum-stability": "stable",
   "license": "MIT",
